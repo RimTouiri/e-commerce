@@ -8,27 +8,24 @@ if(!isset($_SESSION['user_id'])){
 
 		$user = $_POST['user'];
 		$email = $_POST['email'];
-        $nom = $_POST['nom'];
-        $prenom = $_POST['prenom'];
         $adresse = $_POST['adresse'];
+        $prenom = $_POST['prenom'];
+        $nom = $_POST['nom'];
 		$mdp = $_POST['mdp'];
 		$remdp = $_POST['remdp'];
 
 		if($user && $email && $nom && $prenom && $adresse && $mdp && $remdp){
 			
             if($mdp==$remdp){
-				
                 $db->query("INSERT INTO acheteur (user, email, nom, prenom, adresse, mdp) VALUES('$user','$email','$nom','$prenom','$adresse','$mdp')");
 				echo '<br><h3 style="color:green;">Compte créer, <a href="connexion.php">connecter</a> vous.</h3>';
-                
 			}else{
 				echo '<br><h2 style="color:red;">Mot de passe incorrect!</h2>';
 			}
 		}else{
 			echo '<br><h2 style="color:red;">Champs imcomplets!</h2>';
 		}
-	}
-    
+	} 
 ?>
 
 	<br>
@@ -38,12 +35,12 @@ if(!isset($_SESSION['user_id'])){
 	<center><form action="" method="POST">
 		<h4>Pseudo &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
             <input type="text" name="user"/></h4>
-		<h4>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+		<h4>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
             <input type="email" name="email"/></h4>
-        <h4>Nom &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
-            <input type="text" name="nom"/></h4>
         <h4>Prenom &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
             <input type="text" name="prenom"/></h4>
+        <h4>Nom &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+            <input type="text" name="nom"/></h4>
         <h4>Adresse &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
             <input type="text" name="adresse"/></h4>
 		<h4>Mot-de-passe &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
@@ -52,10 +49,10 @@ if(!isset($_SESSION['user_id'])){
             <input type="password" name="remdp"/></h4>
 		
         <input style="color:white; background-color:black;"type="submit" name="submit"/>
-    </form></center>
+    </form>
 
-	<a href="connexion.php">Connexion</a>
-	<br/>
+<a style="text-decoration:none; color:green;" href="connexion.php"><h4>Connexion</h4></a></center>
+	<br>
 <?php
 
 }else{

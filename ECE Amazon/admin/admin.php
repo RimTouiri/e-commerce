@@ -191,9 +191,9 @@
 				<form action="" method="post" enctype="multipart/form-data">
 				<h3>Titre du produit :</h3><input type="text" name="titre"/>
 				<h3>Description du produit :</h3><textarea name="descr"></textarea>
-				<h3>Prix :</h3><input type="text" name="prix"/><br/><br/>
+				<h3>Prix :</h3><input type="text" name="prix"/><br><br>
 				<h3>Image :</h3>
-				<input type="file" name="img"/><br/><br/>
+				<input type="file" name="img"/><br><br>
 				<h3>Categorie :</h3><select name="categorie">
 
 				<?php $select=$db->query("SELECT * FROM categorie");
@@ -211,7 +211,7 @@
 				 ?>
 
 				</select>
-                <br/><br/>
+                <br><br>
 				<h3>Frais de service (0=0€, 1=5€, 2=10€, 3=15€, 4=20€) :</h3><select name="frais">-->
 				<?php 
 
@@ -228,8 +228,8 @@
 					}
 
 				 ?>
-				</select><br/><br/>
-				<h3>Stock : </h3><input type="text" name="nbitem"/><br/><br/>
+				</select><br><br>
+				<h3>Stock : </h3><input type="text" name="nbitem"/><br><br>
 				<input type="submit" name="submit"/>
 				</form>
 
@@ -245,7 +245,7 @@
 					echo $s->titre;
 					?>
 					<a href="?action=modify&amp;id=<?php echo $s->id; ?>">Modifier</a>
-					<a href="?action=delete&amp;id=<?php echo $s->id; ?>">X</a><br/><br/>
+					<a href="?action=delete&amp;id=<?php echo $s->id; ?>">X</a><br><br>
 					<?php
 
 				}
@@ -265,7 +265,7 @@
 				<h3>Titre du produit :</h3><input value="<?php echo $data->titre; ?>" type="text" name="titre"/>
 				<h3>Description du produit :</h3><textarea name="descr"><?php echo $data->descr; ?></textarea>
 				<h3>Prix</h3><input value="<?php echo $data->prix; ?>" type="text" name="prix"/>
-				<h3>Stock : </h3><input type="text" value="<?php echo $data->nbitem; ?>"name="nbitem"/><br/><br/>
+				<h3>Stock : </h3><input type="text" value="<?php echo $data->nbitem; ?>"name="nbitem"/><br><br>
 				<input type="submit" name="submit" value="Modifier"/>
 				</form>
 
@@ -316,7 +316,7 @@
 				?>
 
 				<form action="" method="post">
-				<h3>Titre de la categorie : </h3><input type="text" name="name"/><br/><br/>
+				<h3>Titre de la categorie : </h3><input type="text" name="name"/><br><br>
 				<input type="submit" name="submit" value="Ajouter" />
 				</form>
 
@@ -333,7 +333,7 @@
 					echo $s->name;
 					?>
 					<a href="?action=modify_categorie&amp;id=<?php echo $s->id; ?>">Modifier</a>
-					<a href="?action=delete_categorie&amp;id=<?php echo $s->id; ?>">X</a><br/><br/>
+					<a href="?action=delete_categorie&amp;id=<?php echo $s->id; ?>">X</a><br><br>
 					<?php
 
 				}
@@ -350,7 +350,7 @@
 				?>
 
 				<form action="" method="post">
-				<h3>Titre de la categorie :</h3><input value="<?php echo $data->name; ?>" type="text" name="name"/><br/>
+				<h3>Titre de la categorie :</h3><input value="<?php echo $data->name; ?>" type="text" name="name"/><br>
 				<input type="submit" name="submit" value="Modifier"/>
 				</form>
 
@@ -463,7 +463,7 @@
 				<h3>Options</h3>
 
 				<form action="" method="post">
-				<h3>Poids (plus de) : </h3><input type="text" name="frais" value="<?php echo $_GET['name']; ?>"/><br/>
+				<h3>Poids (plus de) : </h3><input type="text" name="frais" value="<?php echo $_GET['name']; ?>"/><br>
 				<h3>Correspond à </h3><input type="text" name="prix" value="<?php echo $s->prix; ?>"/> <h3>Euros</h3>
 				<input type="submit" name="submit" value="Modifier"/>
 				</form>

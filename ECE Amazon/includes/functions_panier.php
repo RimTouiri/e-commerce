@@ -1,7 +1,6 @@
 <?php
 
-function creationPanier(){
-
+function creePanier(){
    try{
 
       $db = new PDO('mysql:host=127.0.0.1;dbname=ece_amazon', 'root','');
@@ -18,9 +17,9 @@ function creationPanier(){
 
    if (!isset($_SESSION['panier'])){
       $_SESSION['panier']=array();
-      $_SESSION['panier']['libelleProduit'] = array();
+      $_SESSION['panier']['nomArticle'] = array();
       $_SESSION['panier']['slugProduit'] = array();
-      $_SESSION['panier']['qteProduit'] = array();
+      $_SESSION['panier']['quantiteArticle'] = array();
       $_SESSION['panier']['prixProduit'] = array();
       $_SESSION['panier']['verrou'] = false;
       $select = $db->query("SELECT tva FROM products");
@@ -30,7 +29,7 @@ function creationPanier(){
    return true;
 }
 
-function ajouterArticle($slugProduit,$qteProduit,$prixProduit){
+function ajouterArticle($slugProduit,$quantiteArticle,$prixProduit){
 
    try{
 
@@ -46,24 +45,24 @@ function ajouterArticle($slugProduit,$qteProduit,$prixProduit){
 
    }
 
-   if (creationPanier() && !isVerrouille())
+   if (creePanier() && !estBloquer())
    {
 
       $s = $db->query("SELECT titre FROM products WHERE slug = '$slugProduit'");
       $r = $s->fetch(PDO::FETCH_OBJ);
-      $libelleProduit = $r->titre;
+      $nomArticle = $r->titre;
 
       $positionProduit = array_search($slugProduit,  $_SESSION['panier']['slugProduit']);
 
       if ($positionProduit !== false)
       {
-         $_SESSION['panier']['qteProduit'][$positionProduit] += $qteProduit ;
+         $_SESSION['panier']['quantiteArticle'][$positionProduit] += $quantiteArticle ;
       }
       else
       {  
-         array_push( $_SESSION['panier']['libelleProduit'],$libelleProduit);
+         array_push( $_SESSION['panier']['nomArticle'],$nomArticle);
          array_push( $_SESSION['panier']['slugProduit'],$slugProduit);
-         array_push( $_SESSION['panier']['qteProduit'],$qteProduit);
+         array_push( $_SESSION['panier']['quantiteArticle'],$quantiteArticle);
          array_push( $_SESSION['panier']['prixProduit'],$prixProduit);
       }
    }
@@ -72,19 +71,19 @@ function ajouterArticle($slugProduit,$qteProduit,$prixProduit){
    }
 }
 
-function modifierQTeArticle($slugProduit,$qteProduit){
+function modifNbreArticle($slugProduit,$quantiteArticle){
    //Si le panier éxiste
-   if (creationPanier() && !isVerrouille())
+   if (creePanier() && !estBloquer())
    {
       //Si la quantité est positive on modifie sinon on supprime l'article
-      if ($qteProduit > 0)
+      if ($quantiteArticle > 0)
       {
          //Recharche du produit dans le panier
          $positionProduit = array_search($slugProduit,  $_SESSION['panier']['slugProduit']);
 
          if ($positionProduit !== false)
          {
-            $_SESSION['panier']['qteProduit'][$positionProduit] = $qteProduit ;
+            $_SESSION['panier']['quantiteArticle'][$positionProduit] = $quantiteArticle ;
          }
       }
       else{
@@ -99,15 +98,15 @@ function modifierQTeArticle($slugProduit,$qteProduit){
 function supprimerArticle($slugProduit){
    var_dump($slugProduit);
 
-   if (creationPanier() && !isVerrouille())
+   if (creePanier() && !estBloquer())
    {
       for($i = 0; $i < count($_SESSION['panier']['slugProduit']); $i++)
       {
          if ($_SESSION['panier']['slugProduit'][$i] == $slugProduit)
          {
-            unset( $_SESSION['panier']['libelleProduit'][$i]);
+            unset( $_SESSION['panier']['nomArticle'][$i]);
             unset( $_SESSION['panier']['slugProduit'][$i]);
-            unset( $_SESSION['panier']['qteProduit'][$i]);
+            unset( $_SESSION['panier']['quantiteArticle'][$i]);
             unset( $_SESSION['panier']['prixProduit'][$i]);
          }
 
@@ -118,61 +117,57 @@ function supprimerArticle($slugProduit){
    }
 }
 
-function MontantGlobal(){
-   $total=0;
+function PrixGlobal(){
+   $tot=0;
    for($i = 0; $i < count($_SESSION['panier']['slugProduit']); $i++)
    {
-      $total += $_SESSION['panier']['qteProduit'][$i] * $_SESSION['panier']['prixProduit'][$i];
+      $tot += $_SESSION['panier']['quantiteArticle'][$i] * $_SESSION['panier']['prixProduit'][$i];
    }
-   return $total;
+   return $tot;
 }
 
-function MontantGlobalTva(){
+function PrixGlobalTva(){
 
-   $total=0;
+   $tot=0;
    for($i = 0; $i < count($_SESSION['panier']['slugProduit']); $i++)
    {
-      $total += $_SESSION['panier']['qteProduit'][$i] * $_SESSION['panier']['prixProduit'][$i];
+      $tot += $_SESSION['panier']['quantiteArticle'][$i] * $_SESSION['panier']['prixProduit'][$i];
    }
-   return $total + $total*$_SESSION['panier']['tva']/100;
+   return $tot + $tot*$_SESSION['panier']['tva']/100;
 }
 
-function supprimerPanier(){
+function supprPanier(){
    unset($_SESSION['panier']);
 }
 
-function isVerrouille(){
+function estBloquer(){
    if (isset($_SESSION['panier']) && $_SESSION['panier']['verrou']){
-   return true;
+       return true;
    }else{
-   return false;
+       return false;
    }  
 }
 
-function compterArticles()
-{
+function compterArticles(){
    if (isset($_SESSION['panier'])){
-   return count($_SESSION['panier']['slugProduit']);
+       return count($_SESSION['panier']['slugProduit']);
    }else{
-   return 0;
+       return 0;
    }
 
 }
 
-function CalculFraisPorts(){
+function CalculFraisService(){
 
    try{
-
       $db = new PDO('mysql:host=127.0.0.1;dbname=ece_amazon', 'root','');
-      $db->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER); // les noms de champs seront en caractères minuscules
-      $db->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION); // les erreurs lanceront des exceptions
+      $db->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+      $db->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION); 
       $db->exec('SET NAMES utf8');            
    }
 
    catch(Exception $e){
-
       die('Veuillez vérifier la connexion à la base de données');
-
    }
 
    $frais_product = 0;
@@ -180,25 +175,19 @@ function CalculFraisPorts(){
 
    for($i = 0; $i < compterArticles(); $i++){
 
-      for($j = 0; $j < $_SESSION['panier']['qteProduit'][$i]; $j++){
+      for($j = 0; $j < $_SESSION['panier']['quantiteArticle'][$i]; $j++){
 
          $slug = addslashes($_SESSION['panier']['slugProduit'][$i]);
-         $select = $db->query("SELECT frais FROM products WHERE slug='$slug'");
-         $result = $select->fetch(PDO::FETCH_OBJ);
-         $frais = $result->frais;
-
+         $s = $db->query("SELECT frais FROM products WHERE slug='$slug'");
+         $r = $s->fetch(PDO::FETCH_OBJ);
+         $frais = $r->frais;
          $frais_product += $frais;
 
       }
-
    }
-
-   $select2 = $db->query("SELECT * FROM frais WHERE name <= '$frais_product' ORDER BY prix DESC");
-   
-   $result2 = $select2->fetch(PDO::FETCH_OBJ);
-
-   $envoie = $result2->prix;   
-
+   $s2 = $db->query("SELECT * FROM frais WHERE name <= '$frais_product' ORDER BY prix DESC");
+   $r2 = $s2->fetch(PDO::FETCH_OBJ);
+   $envoie = $r2->prix; 
    return $envoie;
 
 }

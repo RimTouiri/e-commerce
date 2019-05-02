@@ -12,7 +12,8 @@ require_once('includes/header.php');
         
     </head>
     <body>
-        <div id="wrapper">
+        
+    <div id="wrapper">
         <div id="header">
             <h1><i>Contacts </i></h1>
             <hr>
@@ -22,22 +23,19 @@ require_once('includes/header.php');
         <table class="table" align=center>
             <tr>
                 <td>
-                <a href="https://www.fb.com/aurelien.caramelle" target="_blank"><center><img src="img/fb.png" width="200px"></center></a>
+                    <a href="https://www.fb.com/aurelien.caramelle" target="_blank"><center><img src="img/fb.png" width="200px"></center></a>
                 </td>
                 <td>
-                <a href="tel:‭+52 (442) 184 8781"><center><img src="img/Tel.jpg" width="200px"></center> </a>
+                    <a href="tel:‭+52 (442) 184 8781"><center><img src="img/Tel.jpg" width="200px"></center> </a>
                 </td>
                 <td>
-                <a href="mailto:aurelien.caramelle@edu.ece.fr"><center><img src="img/mail.jpg" width="200px"></center></a>
-                
+                    <a href="mailto:aurelien.caramelle@edu.ece.fr"><center><img src="img/mail.jpg" width="200px"></center></a>
                 </td>
-            
             </tr>
-        
         </table>
   
-        </div>
-        
+    </div>
+
     </body>
 </html>
 
