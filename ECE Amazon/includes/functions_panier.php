@@ -49,9 +49,9 @@ function ajouterArticle($slugProduit,$qteProduit,$prixProduit){
    if (creationPanier() && !isVerrouille())
    {
 
-      $s = $db->query("SELECT title FROM products WHERE slug = '$slugProduit'");
+      $s = $db->query("SELECT titre FROM products WHERE slug = '$slugProduit'");
       $r = $s->fetch(PDO::FETCH_OBJ);
-      $libelleProduit = $r->title;
+      $libelleProduit = $r->titre;
 
       $positionProduit = array_search($slugProduit,  $_SESSION['panier']['slugProduit']);
 
@@ -175,31 +175,31 @@ function CalculFraisPorts(){
 
    }
 
-   $weight_product = 0;
-   $shipping = 0;
+   $frais_product = 0;
+   $envoie = 0;
 
    for($i = 0; $i < compterArticles(); $i++){
 
       for($j = 0; $j < $_SESSION['panier']['qteProduit'][$i]; $j++){
 
          $slug = addslashes($_SESSION['panier']['slugProduit'][$i]);
-         $select = $db->query("SELECT weight FROM products WHERE slug='$slug'");
+         $select = $db->query("SELECT frais FROM products WHERE slug='$slug'");
          $result = $select->fetch(PDO::FETCH_OBJ);
-         $weight = $result->weight;
+         $frais = $result->frais;
 
-         $weight_product += $weight;
+         $frais_product += $frais;
 
       }
 
    }
 
-   $select2 = $db->query("SELECT * FROM weights WHERE name <= '$weight_product' ORDER BY price DESC");
+   $select2 = $db->query("SELECT * FROM frais WHERE name <= '$frais_product' ORDER BY prix DESC");
    
    $result2 = $select2->fetch(PDO::FETCH_OBJ);
 
-   $shipping = $result2->price;   
+   $envoie = $result2->prix;   
 
-   return $shipping;
+   return $envoie;
 
 }
 

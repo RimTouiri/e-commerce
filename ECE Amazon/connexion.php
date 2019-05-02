@@ -11,9 +11,9 @@ if(!isset($_SESSION['user_id'])){
 		$mdp = $_POST['mdp'];
 
 		if($email && $mdp){
-			$select = $db->query("SELECT id FROM users WHERE email='$email' AND mdp='$mdp' ");
+			$select = $db->query("SELECT id FROM acheteur WHERE email='$email' AND mdp='$mdp' ");
 			if($select->fetchColumn()){
-				$select = $db->query("SELECT * FROM users WHERE email='$email'");
+				$select = $db->query("SELECT * FROM acheteur WHERE email='$email'");
 				$result = $select->fetch(PDO::FETCH_OBJ);
 				$_SESSION['user_id'] = $result->id;
 				$_SESSION['user_name'] = $result->user;
@@ -30,16 +30,20 @@ if(!isset($_SESSION['user_id'])){
 	}
 
 	?>
-	<br/>
-	<h1>Se connecter</h1>
+	<br>
+	<center><h1>Connexion</h1>
+    <br>
 
 	<form action="" method="POST">
-		<h4>Votre email <input type="email" name="email"/></h4>
-		<h4>Votre mot-de-passe <input type="password" name="mdp"/></h4>
+		<h4>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <input type="email" name="email"/></h4>
+		<h4>Mot-de-passe : <input type="password" name="mdp"/></h4>
 		<input type="submit" name="submit"/>
 	</form>
-	<a href="inscription.php">S'inscrire</a>
-	<br/>
+        <br>
+	<a href="inscription.php">Inscription</a>
+	<br>
+</center>
+<br><br><br><br><br><br><br><br><br><br>
 <?php
 
 }else{

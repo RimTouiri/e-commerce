@@ -118,8 +118,8 @@ if(!$erreur){
 
 				$total = MontantGlobal();
 				$totaltva = MontantGlobalTVA();
-				$shipping = CalculFraisPorts();
-				$prixtot = $totaltva + $shipping;
+				$envoie = CalculFraisPorts();
+				$prixtot = $totaltva + $envoie;
 
 				for($i = 0; $i<$nbProduits; $i++){
 
@@ -140,7 +140,7 @@ if(!$erreur){
 						<td colspan="2"><br/>
 							<p>Total : <?php echo $total." €"; ?></p><br/>
 							<p>Total avec TVA : <?php echo $totaltva." €"; ?></p>
-							<p>Calcul des frais de port : <?php echo $shipping." €"; ?></p>
+							<p>Frais de service : <?php echo $envoie." €"; ?></p>
 							<?php if(isset($_SESSION['user_id'])){ ?><div id="paypal-button"></div><?php }else{?><h4 style="color:red;">Vous devez être connecté pour payer votre commande. <a href="connexion.php">Se connecter</a></h4><?php } ?>
 						</td>
 					</tr>
@@ -148,7 +148,7 @@ if(!$erreur){
 						<td colspan="4">
 							<input type="submit" value="rafraichir"/>
 							<input type="hidden" name="action" value="refresh"/>
-							<a href="?deletepanier=true">Supprimer le panier</a>
+							<a href="?deletepanier=true">Suppression du panier</a>
 						</td>
 					</tr>
 
@@ -165,7 +165,7 @@ if(!$erreur){
 <script>
 	paypal.Button.render({
 
-	    env: 'sandbox', // sandbox | production, si c'est pour tester : sandbox, si c'est pour de vrai : production
+	    env: 'sandbox',//sandbox|production, tester: sandbox, pour de vrai: production
 
 	    // PayPal Client IDs - replace with your own
 	    // Create a PayPal app: https://developer.paypal.com/developer/applications/create
@@ -216,25 +216,25 @@ if(!$erreur){
                 var shipping = data.payer.payer_info.shipping_address;
 
                 var name = shipping.recipient_name;
-                var street = shipping.line1;
-                var country_code = shipping.country_code;
-                var city = shipping.city;
+                var rue = shipping.line1;
+                var pays_code = shipping.pays_code;
+                var ville = shipping.ville;
                 var date = '<?= date("Y/m/d") ?>';
-                var transaction_id = data.id;
-                var price = data.transactions[0].amount.total;
-                var currency_code = 'EUR';
+                var id_trans = data.id;
+                var prix = data.transactions[0].amount.total;
+                var code_devise = 'EUR';
 
                 $.post(
          			"process.php",
          			{
          				name : name,
-         				street: street,
-         				city: city,
-         				country_code : country_code,
+         				rue: rue,
+         				ville: ville,
+         				pays_code : pays_code,
          				date: date,
-         				transaction_id: transaction_id,
-         				price: price,
-         				currency_code: currency_code,
+         				id_trans: id_trans,
+         				prix: prix,
+         				code_devise: code_devise,
          			}
 				);
 

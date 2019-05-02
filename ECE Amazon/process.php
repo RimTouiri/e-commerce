@@ -18,27 +18,27 @@ catch(Exception $e){
 }
 
 $name = $_POST['name'];
-$street = $_POST['street'];
-$city = $_POST['city'];
-$country_code = $_POST['country_code'];
+$rue = $_POST['rue'];
+$ville = $_POST['ville'];
+$pays_code = $_POST['pays_code'];
 $date = $_POST['date'];
-$transaction_id = $_POST['transaction_id'];
-$price = $_POST['price'];
-$currency_code = $_POST['currency_code'];
+$id_trans = $_POST['id_trans'];
+$prix = $_POST['prix'];
+$code_devise = $_POST['code_devise'];
 $user_id = $_SESSION['user_id'];
 
-$db->query("INSERT INTO transactions (name, street, city, country, date, transaction_id, amount, currency_code, user_id) VALUES('$name', '$street', '$city', '$country_code', '$date', '$transaction_id', '$price', '$currency_code', '$user_id')");
+$db->query("INSERT INTO transactions (name, rue, ville, pays, date, id_trans, amount, code_devise, user_id) VALUES('$name', '$rue', '$ville', '$pays_code', '$date', '$id_trans', '$prix', '$code_devises', '$user_id')");
 
 
 for($i = 0; $i<count($_SESSION['panier']['libelleProduit']); $i++){
-	$product = $_SESSION['panier']['libelleProduit'][$i];
-	$quantity = $_SESSION['panier']['qteProduit'][$i];
-	$insert = $db->query("INSERT INTO products_transactions (product, quantity, transaction_id) VALUES('$product','$quantity', '$transaction_id')");
-	$select = $db->query("SELECT * FROM products WHERE title='$product'");
+	$produit = $_SESSION['panier']['libelleProduit'][$i];
+	$quantite_article = $_SESSION['panier']['qteProduit'][$i];
+	$insert = $db->query("INSERT INTO products_transactions (produit, quantite_article, id_trans) VALUES('$produit','$quantite_article', '$id_trans')");
+	$select = $db->query("SELECT * FROM products WHERE titre='$produit'");
 	$r = $select->fetch(PDO::FETCH_OBJ);
-	$stock = $r->stock;
-	$stock = $stock-$quantity;
-	$update = $db->query("UPDATE products SET stock='$stock' WHERE title='$product'");
+	$nbitem = $r->nbitem;
+	$nbitem = $nbitem-$quantite_article;
+	$update = $db->query("UPDATE products SET nbitem='$nbitem' WHERE titre='$produit'");
 }
 
 supprimerPanier();

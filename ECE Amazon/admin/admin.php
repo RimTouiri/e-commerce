@@ -6,39 +6,49 @@
 <link href="../style/bootstrap.css" type="text/css" rel="stylesheet"/>
 
 <center><h1>Bienvenue, <?php echo $_SESSION['user']; ?></h1></center>
-<br/>
+<br>
 
-<a href="?action=add">Ajouter un produit</a>
+<div>
+    <center><h2>Gestion des Produits</h2>
+    <a href="?action=add">Ajouter un produit</a>
+    <br>
+    <a href="?action=modifyanddelete">Modifier / Supprimer un produit</a></center>
+</div>
 <br>
-<a href="?action=modifyanddelete">Modifier / Supprimer un produit</a>
+<div>
+    <center><h2>Gestion des Catégories</h2>
+    <a href="?action=add_categorie">Ajouter une categorie</a>
+    <br>
+    <a href="?action=modifyanddelete_categorie">Modifier / Supprimer une categorie</a>
+    <br><br></center>
+</div>
+<div>
+    <center><h2>Gestion des Vendeurs</h2>
+    <a href="?action=add_vendeur">Ajouter un vendeur</a>
+    <br>
+    <a href="?action=modifyanddelete_vendeur">Modifier / Supprimer un vendeur</a>
+    </center>
+</div>
 <br>
-<br>
-<a href="?action=add_category">Ajouter une categorie</a>
-<br>
-<a href="?action=modifyanddelete_category">Modifier / Supprimer une categorie</a><br/><br/>
-
-<a href="?action=options">Options</a><br/><br/>
+<center><h2>Gestion des Frais de services et de la TVA</h2>
+<a href="?action=options">Options : Frais de service/TVA</a></center>
+    <br><br>
 
 <?php
 
-	function slugify($text){
-		$text = preg_replace('~[^\pL\d]+~u', '-', $text);
+	function sluge($ecrit){
+		$ecrit=preg_replace('~[^\pL\d]+~u', '-', $ecrit);
+		$ecrit=iconv('utf-8', 'us-ascii//TRANSLIT', $ecrit);
+		$ecrit=preg_replace('~[^-\w]+~', '', $ecrit);
+		$ecrit=trim($ecrit, '-');
+		$ecrit=preg_replace('~-+~', '-', $ecrit);
+		$ecrit=strtolower($ecrit);
 
-		$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-
-		$text = preg_replace('~[^-\w]+~', '', $text);
-
-		$text = trim($text, '-');
-
-		$text = preg_replace('~-+~', '-', $text);
-
-		$text = strtolower($text);
-
-		if (empty($text)) {
+		if (empty($ecrit)) {
 		  return 'n-a';
 		}
 
-  		return $text;
+  		return $ecrit;
 	}
 
 	try{
@@ -63,11 +73,11 @@
 
 				if(isset($_POST['submit'])){
 
-					$stock = $_POST['stock'];
-					$title= addslashes($_POST['title']);
-					$slug = slugify($title);
-					$description= addslashes($_POST['description']);
-					$price=$_POST['price'];
+					$nbitem= $_POST['nbitem'];
+					$titre= addslashes($_POST['titre']);
+					$slug = sluge($titre);
+					$descr= addslashes($_POST['descr']);
+					$prix=$_POST['prix'];
 
 					$img = $_FILES['img']['name'];
 
@@ -134,21 +144,21 @@
 
 					}
 
-					if($title&&$description&&$price&&$stock){
+					if($titre&&$descr&&$prix&&$nbitem){
 
-						$category=$_POST['category'];
+						$categorie=$_POST['categorie'];
 
-						$weight=$_POST['weight'];
+						$frais=$_POST['frais'];
 
-						$select = $db->query("SELECT price FROM weights WHERE name='$weight'");
+						$select = $db->query("SELECT prix FROM frais WHERE name='$frais'");
 
 						$s = $select->fetch(PDO::FETCH_OBJ);
 
-						$shipping = $s->price;
+						$envoie = $s->prix;
 
-						$old_price = $price;
+						$old_prix = $prix;
 
-						$Final_price = $old_price + $shipping;
+						$prix_final = $old_prix + $envoie;
 
 						$select=$db->query("SELECT tva FROM products");
 
@@ -162,11 +172,11 @@
 							$tva = 20;
 						}
 
-						$final_price_1 = $Final_price+$Final_price*$tva/100;
+						$prix_final_1 = $prix_final+$prix_final*$tva/100;
 
-						$insert = $db->query("INSERT INTO products (title,slug,description,price,category,weight,shipping,tva,final_price,stock) VALUES('$title','$slug','$description','$price','$category','$weight','$shipping','$tva','$final_price_1','$stock')");
+						$insert = $db->query("INSERT INTO products (titre,slug,descr,prix,categorie,frais,envoie,tva,prix_final,nbitem) VALUES('$titre','$slug','$descr','$prix','$categorie','$frais','$envoie','$tva','$prix_final_1','$nbitem')");
 
-						header('Location: ../categories.php?category='.$category);
+						header('Location: ../categories.php?categorie='.$categorie);
 
 					}else{
 
@@ -179,14 +189,14 @@
 			?>
 
 				<form action="" method="post" enctype="multipart/form-data">
-				<h3>Titre du produit :</h3><input type="text" name="title"/>
-				<h3>Description du produit :</h3><textarea name="description"></textarea>
-				<h3>Prix :</h3><input type="text" name="price"/><br/><br/>
+				<h3>Titre du produit :</h3><input type="text" name="titre"/>
+				<h3>Description du produit :</h3><textarea name="descr"></textarea>
+				<h3>Prix :</h3><input type="text" name="prix"/><br/><br/>
 				<h3>Image :</h3>
 				<input type="file" name="img"/><br/><br/>
-				<h3>Categorie :</h3><select name="category">
+				<h3>Categorie :</h3><select name="categorie">
 
-				<?php $select=$db->query("SELECT * FROM category");
+				<?php $select=$db->query("SELECT * FROM categorie");
 
 					while($s = $select->fetch(PDO::FETCH_OBJ)){
 
@@ -200,11 +210,12 @@
 
 				 ?>
 
-				</select><br/><br/>
-				<h3>Poids : (plus de) </h3><select name="weight">
+				</select>
+                <br/><br/>
+				<h3>Frais de service (0=0€, 1=5€, 2=10€, 3=15€, 4=20€) :</h3><select name="frais">-->
 				<?php 
 
-					$select=$db->query("SELECT * FROM weights");
+					$select=$db->query("SELECT * FROM frais");
 
 					while($s = $select->fetch(PDO::FETCH_OBJ)){
 
@@ -218,7 +229,7 @@
 
 				 ?>
 				</select><br/><br/>
-				<h3>Stock : </h3><input type="text" name="stock"/><br/><br/>
+				<h3>Stock : </h3><input type="text" name="nbitem"/><br/><br/>
 				<input type="submit" name="submit"/>
 				</form>
 
@@ -231,7 +242,7 @@
 
 				while($s=$select->fetch(PDO::FETCH_OBJ)){
 
-					echo $s->title;
+					echo $s->titre;
 					?>
 					<a href="?action=modify&amp;id=<?php echo $s->id; ?>">Modifier</a>
 					<a href="?action=delete&amp;id=<?php echo $s->id; ?>">X</a><br/><br/>
@@ -251,10 +262,10 @@
 				?>
 
 				<form action="" method="post">
-				<h3>Titre du produit :</h3><input value="<?php echo $data->title; ?>" type="text" name="title"/>
-				<h3>Description du produit :</h3><textarea name="description"><?php echo $data->description; ?></textarea>
-				<h3>Prix</h3><input value="<?php echo $data->price; ?>" type="text" name="price"/>
-				<h3>Stock : </h3><input type="text" value="<?php echo $data->stock; ?>"name="stock"/><br/><br/>
+				<h3>Titre du produit :</h3><input value="<?php echo $data->titre; ?>" type="text" name="titre"/>
+				<h3>Description du produit :</h3><textarea name="descr"><?php echo $data->descr; ?></textarea>
+				<h3>Prix</h3><input value="<?php echo $data->prix; ?>" type="text" name="prix"/>
+				<h3>Stock : </h3><input type="text" value="<?php echo $data->nbitem; ?>"name="nbitem"/><br/><br/>
 				<input type="submit" name="submit" value="Modifier"/>
 				</form>
 
@@ -262,12 +273,12 @@
 
 				if(isset($_POST['submit'])){
 
-					$stock = $_POST['stock'];
-					$title=$_POST['title'];
-					$description=$_POST['description'];
-					$price=$_POST['price'];
+					$nbitem = $_POST['nbitem'];
+					$titre=$_POST['titre'];
+					$descr=$_POST['descr'];
+					$prix=$_POST['prix'];
 
-					$update = $db->prepare("UPDATE products SET title='$title',description='$description',price='$price',stock='$stock' WHERE id=$id");
+					$update = $db->prepare("UPDATE products SET titre='$titre',descr='$descr',prix='$prix',nbitem='$nbitem' WHERE id=$id");
 					$update->execute();
 
 					header('Location: admin.php?action=modifyanddelete');
@@ -281,16 +292,16 @@
 				$delete->execute();
 				header('Location: admin.php?action=modifyanddelete');
 
-			}else if($_GET['action']=='add_category'){
+			}else if($_GET['action']=='add_categorie'){
 
 				if(isset($_POST['submit'])){
 
 					$name = addslashes($_POST['name']);
-					$slug = slugify($name);
+					$slug = sluge($name);
 
 					if($name){
 
-						$insert = $db->prepare("INSERT INTO category (name,slug) VALUES('$name','$slug')");
+						$insert = $db->prepare("INSERT INTO categorie (name,slug) VALUES('$name','$slug')");
 						$insert->execute();
 
 
@@ -312,26 +323,26 @@
 				<?php
 
 
-			}else if($_GET['action']=='modifyanddelete_category'){
+			}else if($_GET['action']=='modifyanddelete_categorie'){
 
-				$select = $db->prepare("SELECT * FROM category");
+				$select = $db->prepare("SELECT * FROM categorie");
 				$select->execute();
 
 				while($s=$select->fetch(PDO::FETCH_OBJ)){
 
 					echo $s->name;
 					?>
-					<a href="?action=modify_category&amp;id=<?php echo $s->id; ?>">Modifier</a>
-					<a href="?action=delete_category&amp;id=<?php echo $s->id; ?>">X</a><br/><br/>
+					<a href="?action=modify_categorie&amp;id=<?php echo $s->id; ?>">Modifier</a>
+					<a href="?action=delete_categorie&amp;id=<?php echo $s->id; ?>">X</a><br/><br/>
 					<?php
 
 				}
 
-			}else if($_GET['action']=='modify_category'){
+			}else if($_GET['action']=='modify_categorie'){
 
 				$id=$_GET['id'];
 
-				$select = $db->prepare("SELECT * FROM category WHERE id=$id");
+				$select = $db->prepare("SELECT * FROM categorie WHERE id=$id");
 				$select->execute();
 
 				$data = $select->fetch(PDO::FETCH_OBJ);
@@ -349,44 +360,44 @@
 
 					$name=$_POST['name'];
 
-					$select = $db->query("SELECT name FROM category WHERE id='$id'");
+					$select = $db->query("SELECT name FROM categorie WHERE id='$id'");
 
 					$result = $select->fetch(PDO::FETCH_OBJ);
 
-					$update = $db->prepare("UPDATE category SET name='$name' WHERE id=$id");
+					$update = $db->prepare("UPDATE categorie SET name='$name' WHERE id=$id");
 					$update->execute();
 
 					$id = $_GET['id'];
 				
-					$update = $db->query("UPDATE products SET category='$name' WHERE category='$result->name'");
+					$update = $db->query("UPDATE products SET categorie='$name' WHERE categorie='$result->name'");
 					
-					header('Location: admin.php?action=modifyanddelete_category');
+					header('Location: admin.php?action=modifyanddelete_categorie');
 				}
 
-			}else if($_GET['action']=='delete_category'){
+			}else if($_GET['action']=='delete_categorie'){
 
 				$id=$_GET['id'];
-				$delete = $db->prepare("DELETE FROM category WHERE id=$id");
+				$delete = $db->prepare("DELETE FROM categorie WHERE id=$id");
 				$delete->execute();
 
-				header('Location: admin.php?action=modifyanddelete_category');
+				header('Location: admin.php?action=modifyanddelete_categorie');
 
 			}else if($_GET['action']=='options'){
 
 				?>
 
-				<h3>Options de poids (plus de)</h3>
+				<h3>Possibilités de Frais de service :</h3>
 
 				<?php
 
-				$select = $db->query("SELECT * FROM weights");
+				$select = $db->query("SELECT * FROM frais");
 
 				while($s=$select->fetch(PDO::FETCH_OBJ)){
 
 					?>
 
 					<form action="" method="post">
-					<input type="text" name="weight" value="<?php echo $s->name;?>"/><a href="?action=modify_weight&amp;name=<?php echo $s->name; ?>">  Modifier</a>
+					<input type="text" name="frais" value="<?php echo $s->name;?>"/><a href="?action=modify_frais&amp;name=<?php echo $s->name; ?>">  Modifier</a>
 					</form>
 
 					<?php
@@ -417,7 +428,7 @@
 				}
 
 				?>
-				<h3>TVA : </h3>
+				<h3>tva : </h3>
 
 				<form action="" method="post"/>
 				<input type="text" name="tva" value="<?= $show_tva; ?>"/>
@@ -427,20 +438,20 @@
 				<?php
 
 
-			}else if($_GET['action']=='modify_weight'){
+			}else if($_GET['action']=='modify_frais'){
 
-				$old_weight = $_GET['name'];
-				$select = $db->query("SELECT * FROM weights WHERE name=$old_weight");
+				$old_frais = $_GET['name'];
+				$select = $db->query("SELECT * FROM frais WHERE name=$old_frais");
 				$s = $select->fetch(PDO::FETCH_OBJ);
 
 				if(isset($_POST['submit'])){
 
-					$weight=$_POST['weight'];
-					$price=$_POST['price'];
+					$frais=$_POST['frais'];
+					$prix=$_POST['prix'];
 
-					if($weight&&$price){
+					if($frais&&$prix){
 
-						$update = $db->query("UPDATE weights SET name='$weight', price='$price' WHERE name=$old_weight");
+						$update = $db->query("UPDATE frais SET name='$frais', prix='$prix' WHERE name=$old_frais");
 						header("Refresh:0");
 
 					}
@@ -449,11 +460,11 @@
 
 				?>
 
-				<h3>Options de poids (plus de)</h3>
+				<h3>Options</h3>
 
 				<form action="" method="post">
-				<h3>Poids (plus de) : </h3><input type="text" name="weight" value="<?php echo $_GET['name']; ?>"/><br/>
-				<h3>Correspond à </h3><input type="text" name="price" value="<?php echo $s->price; ?>"/> <h3>Euros</h3>
+				<h3>Poids (plus de) : </h3><input type="text" name="frais" value="<?php echo $_GET['name']; ?>"/><br/>
+				<h3>Correspond à </h3><input type="text" name="prix" value="<?php echo $s->prix; ?>"/> <h3>Euros</h3>
 				<input type="submit" name="submit" value="Modifier"/>
 				</form>
 

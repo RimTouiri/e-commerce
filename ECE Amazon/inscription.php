@@ -18,7 +18,7 @@ if(!isset($_SESSION['user_id'])){
 			
             if($mdp==$remdp){
 				
-                $db->query("INSERT INTO users (user, email, nom, prenom, adresse, mdp) VALUES('$user','$email','$nom','$prenom','$adresse','$mdp')");
+                $db->query("INSERT INTO acheteur (user, email, nom, prenom, adresse, mdp) VALUES('$user','$email','$nom','$prenom','$adresse','$mdp')");
 				echo '<br><h3 style="color:green;">Compte créer, <a href="connexion.php">connecter</a> vous.</h3>';
                 
 			}else{
