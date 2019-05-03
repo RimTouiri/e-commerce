@@ -7,6 +7,10 @@
     margin-left:1500px;
 }
 
+.panier{
+    margin-left:1490px;
+}
+
 .footer h5{
     background-color: #256C6C;
     color: white;
@@ -25,8 +29,8 @@
     display: inline;
 }
 
-.menu li a {
-    padding: 15px 63px;
+.menu li a{
+    padding: 15px 78px;
     background-color: #256C6C;
     text-decoration: none;
     color: white;
@@ -55,4 +59,3 @@
     color: #256C6C;
     text-align: center;
 }
-

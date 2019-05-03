@@ -1,5 +1,7 @@
 <!--sources paypal : https://developer.paypal.com/demo/checkout/#/pattern/client
-//https://developer.paypal.com/docs/api/payments/v1/#payment-->
+https://developer.paypal.com/docs/api/payments/v1/#payment
+https://jcrozier.developpez.com/articles/web/panier/-->
+
 
 <?php
 require_once('includes/header.php');
@@ -40,7 +42,6 @@ require_once('includes/header.php');
             }else{
                 $b = intval($b);
             }
-
     }
 
 if(!$erreur){
@@ -57,7 +58,7 @@ if(!$erreur){
 
 		Case "refresh":
 		for($i = 0;$i<count($NbreArticle);$i++){
-			modifNbreArticle($_SESSION['panier']['slugProduit'][$i], round($NbreArticle[$i]));
+			modifNbreArticle($_SESSION['panier']['slugArticle'][$i], round($NbreArticle[$i]));
 		}
 		break;
 
@@ -114,7 +115,7 @@ if(!$erreur){
                             <br><?php echo $_SESSION['panier']['nomArticle'][$i]; ?>
                         </td>
 						<td>
-                            <br><?php echo $_SESSION['panier']['prixProduit'][$i];?>
+                            <br><?php echo $_SESSION['panier']['prixArticle'][$i];?>
                         </td>
 						<td>
                             <br><input name="q[]" value="<?php echo $_SESSION['panier']['quantiteArticle'][$i]; ?>" size="5"/>
@@ -123,7 +124,7 @@ if(!$erreur){
                             <br><?php echo $_SESSION['panier']['tva']." %"; ?>
                         </td>
 						<td>
-                            <br><a href="panier.php?action=supprimer&amp;l=<?php echo $_SESSION['panier']['slugProduit'][$i]; ?>">X</a>
+                            <br><a href="panier.php?action=supprimer&amp;l=<?php echo $_SESSION['panier']['slugArticle'][$i]; ?>">X</a>
                         </td>
 
 					</tr>
@@ -209,8 +210,7 @@ if(!$erreur){
 	        });
 	    },
 
-	    // onAuthorize() is called when the buyer approves the payment
-	    onAuthorize: function(data, actions) {
+	    onAuthorize: function(data, actions) { // onAuthorize() is called when the buyer approves the payment
 
 	        return actions.payment.get().then(function(data) {
 

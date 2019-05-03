@@ -1,12 +1,17 @@
-<?php 
+<?php
 
 require_once('includes/header.php');
 
-if(!isset($_SESSION['user_id'])){
+?>
+
+
+<?php
+
+if(!isset($_SESSION['vendeur_id'])){
 
 	if(isset($_POST['submit'])){
 
-		$user = $_POST['user'];
+		$vendeur = $_POST['vendeur'];
 		$email = $_POST['email'];
         $adresse = $_POST['adresse'];
         $prenom = $_POST['prenom'];
@@ -14,11 +19,11 @@ if(!isset($_SESSION['user_id'])){
 		$mdp = $_POST['mdp'];
 		$remdp = $_POST['remdp'];
 
-		if($user && $email && $nom && $prenom && $adresse && $mdp && $remdp){
+		if($vendeur && $email && $nom && $prenom && $adresse && $mdp && $remdp){
 			
             if($mdp==$remdp){
-                $db->query("INSERT INTO acheteur (user, email, nom, prenom, adresse, mdp) VALUES('$user','$email','$nom','$prenom','$adresse','$mdp')");
-				echo '<br><h3 style="color:green;">Compte créer, <a href="connexion.php">connecter</a> vous.</h3>';
+                $db->query("INSERT INTO vendeur (vendeur, email, nom, prenom, adresse, mdp) VALUES('$vendeur','$email','$nom','$prenom','$adresse','$mdp')");
+				echo '<br><h3 style="color:green;">Compte créer, <a href="connexionVendeur.php">connecter</a> vous.</h3>';
 			}else{
 				echo '<br><h2 style="color:red;">Mot de passe incorrect!</h2>';
 			}
@@ -29,12 +34,12 @@ if(!isset($_SESSION['user_id'])){
 ?>
 
 	<br>
-    <center><h1>Inscription - Acheteur</h1></center>
+    <center><h1>Inscription - Vendeur</h1></center>
     <br>
 
 	<center><form action="" method="POST">
 		<h4>Pseudo &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
-            <input type="text" name="user"/></h4>
+            <input type="text" name="vendeur"/></h4>
 		<h4>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
             <input type="email" name="email"/></h4>
         <h4>Prenom &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
@@ -51,15 +56,15 @@ if(!isset($_SESSION['user_id'])){
         <input style="color:white; background-color:black;"type="submit" name="submit"/>
     </form>
 
-<a style="text-decoration:none; color:green;" href="connexion.php"><h4>Connexion</h4></a></center>
+<a style="text-decoration:none; color:green;" href="connexionVendeur.php"><h4>Connexion</h4></a></center>
 	<br>
 <?php
 
 }else{
-	header('Location:compte.php');
+	header('Location:compteVendeur.php');
 }
 ?>
 
 <?php
-    require_once('includes/footer.php');
+require_once('includes/footer.php');
 ?>

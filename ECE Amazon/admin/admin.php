@@ -10,28 +10,28 @@
 
 <div>
     <center><h2>Gestion des Produits</h2>
-    <a href="?action=add">Ajouter un produit</a>
+    <a href="?action=ajouter">Ajouter un produit</a>
     <br>
-    <a href="?action=modifyanddelete">Modifier / Supprimer un produit</a></center>
+    <a href="?action=modifieretsuppr">Modifier / Supprimer un produit</a></center>
 </div>
 <br>
 <div>
     <center><h2>Gestion des Catégories</h2>
-    <a href="?action=add_categorie">Ajouter une categorie</a>
+    <a href="?action=ajouter_categorie">Ajouter une categorie</a>
     <br>
-    <a href="?action=modifyanddelete_categorie">Modifier / Supprimer une categorie</a>
+    <a href="?action=modifieretsuppr_categorie">Modifier / Supprimer une categorie</a>
     <br><br></center>
 </div>
 <div>
     <center><h2>Gestion des Vendeurs</h2>
-    <a href="?action=add_vendeur">Ajouter un vendeur</a>
+    <a href="?action=ajouter_vendeur">Ajouter un vendeur</a>
     <br>
-    <a href="?action=modifyanddelete_vendeur">Modifier / Supprimer un vendeur</a>
+    <a href="?action=supprimer_vendeur">Supprimer un vendeur</a>
     </center>
 </div>
 <br>
 <center><h2>Gestion des Frais de services et de la TVA</h2>
-<a href="?action=options">Options : Frais de service/TVA</a></center>
+<a href="?action=option">Options : Frais de service/TVA</a></center>
     <br><br>
 
 <?php
@@ -54,22 +54,19 @@
 	try{
 
 		$db = new PDO('mysql:host=127.0.0.1;dbname=ece_amazon', 'root','');
-		$db->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER); // les noms de champs seront en caractères minuscules
-		$db->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION); // les erreurs lanceront des exceptions
-		$db->exec('SET NAMES utf8');				
-	}
-
-	catch(Exception $e){
-
+		$db->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER); 
+		$db->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION); 
+		$db->exec('SET NAMES utf8');
+        
+	}catch(Exception $e){
 		die('Une erreur est survenue');
-
 	}
 
 	if(isset($_SESSION['user'])){
 
 		if(isset($_GET['action'])){
 
-			if($_GET['action']=='add'){
+			if($_GET['action']=='ajouter'){
 
 				if(isset($_POST['submit'])){
 
@@ -91,44 +88,44 @@
 
 						if(in_array(strtolower($image_ext),array('png','jpg','jpeg'))===false){
 
-							echo'Veuillez rentrer une image ayant pour extension : png, jpg ou jpeg';
+							echo'<h2 style="color:red;">Veuillez rentrer une image du type : png, jpg ou jpeg</h2>';
 
 						}else{
 
-							$image_size = getimagesize($img_tmp);
+							$image_taille = getimagesize($img_tmp);
 
-							if($image_size['mime']=='image/jpeg'){
+							if($image_taille['mime']=='image/jpeg'){
 
 								$image_src = imagecreatefromjpeg($img_tmp);
 
-							}else if($image_size['mime']=='image/png'){
+							}else if($image_taille['mime']=='image/png'){
 
 								$image_src = imagecreatefrompng($img_tmp);
 
 							}else{
 
 								$image_src = false;
-								echo'Veuillez rentrer une image valide';
+								echo'<h2 style="color:red;>Veuillez rentrer une image valide</h2>';
 
 							}
 
 							if($image_src!==false){
 
-								$image_width=200;
+								$image_largeur=200;
 
-								if($image_size[0]==$image_width){
+								if($image_taille[0]==$image_largeur){
 
 									$image_finale = $image_src;
 
 								}else{
 
-									$new_width[0]=$image_width;
+									$nvelle_largeur[0]=$image_largeur;
 
-									$new_height[1] = 200;
+									$nvelle_hauteur[1] = 200;
 
-									$image_finale = imagecreatetruecolor($new_width[0],$new_height[1]);
+									$image_finale = imagecreatetruecolor($nvelle_largeur[0],$nvelle_hauteur[1]);
 
-									imagecopyresampled($image_finale,$image_src,0,0,0,0,$new_width[0],$new_height[1],$image_size[0],$image_size[1]);
+									imagecopyresampled($image_finale,$image_src,0,0,0,0,$nvelle_largeur[0],$nvelle_hauteur[1],$image_taille[0],$image_taille[1]);
 
 								}
 
@@ -140,11 +137,11 @@
 
 					}else{
 
-						echo'Veuillez rentrer une image';
+						echo'<h2 style="color:red;>Veuillez ajouter une image</h2>';
 
 					}
 
-					if($titre&&$descr&&$prix&&$nbitem){
+					if($titre && $descr && $nbitem && $prix){
 
 						$categorie=$_POST['categorie'];
 
@@ -156,9 +153,9 @@
 
 						$envoie = $s->prix;
 
-						$old_prix = $prix;
+						$ancien_prix = $prix;
 
-						$prix_final = $old_prix + $envoie;
+						$prix_final = $ancien_prix + $envoie;
 
 						$select=$db->query("SELECT tva FROM products");
 
@@ -180,7 +177,7 @@
 
 					}else{
 
-						echo'Veuillez remplir tous les champs';
+						echo'<h2 style="color:red;">Champs incomplets!<h2>';
 
 					}
 
@@ -188,12 +185,12 @@
 
 			?>
 
-				<form action="" method="post" enctype="multipart/form-data">
-				<h3>Titre du produit :</h3><input type="text" name="titre"/>
+				<center><form action="" method="post" enctype="multipart/form-data">
+				<h3>Titre du produit :</h3><input type="text" name="titre">
 				<h3>Description du produit :</h3><textarea name="descr"></textarea>
-				<h3>Prix :</h3><input type="text" name="prix"/><br><br>
+				<h3>Prix :</h3><input type="text" name="prix"><br><br>
 				<h3>Image :</h3>
-				<input type="file" name="img"/><br><br>
+				<input type="file" name="img"><br><br>
 				<h3>Categorie :</h3><select name="categorie">
 
 				<?php $select=$db->query("SELECT * FROM categorie");
@@ -229,13 +226,13 @@
 
 				 ?>
 				</select><br><br>
-				<h3>Stock : </h3><input type="text" name="nbitem"/><br><br>
-				<input type="submit" name="submit"/>
-				</form>
+				<h3>Stock : </h3><input type="text" name="nbitem"><br><br>
+				<input type="submit" name="submit">
+                </form></center>
 
 			<?php
 
-			}else if($_GET['action']=='modifyanddelete'){
+			}else if($_GET['action']=='modifieretsuppr'){
 
 				$select = $db->prepare("SELECT * FROM products");
 				$select->execute();
@@ -244,13 +241,14 @@
 
 					echo $s->titre;
 					?>
-					<a href="?action=modify&amp;id=<?php echo $s->id; ?>">Modifier</a>
-					<a href="?action=delete&amp;id=<?php echo $s->id; ?>">X</a><br><br>
+					<a href="?action=modifier&amp;id=<?php echo $s->id; ?>">Modifier</a>
+					<a href="?action=suppr&amp;id=<?php echo $s->id; ?>">X</a>
+                    <br><br>
 					<?php
 
 				}
 
-			}else if($_GET['action']=='modify'){
+			}else if($_GET['action']=='modifier'){
 
 				$id=$_GET['id'];
 
@@ -261,13 +259,13 @@
 
 				?>
 
-				<form action="" method="post">
-				<h3>Titre du produit :</h3><input value="<?php echo $data->titre; ?>" type="text" name="titre"/>
+				<center><form action="" method="post">
+				<h3>Titre du produit :</h3><input value="<?php echo $data->titre; ?>" type="text" name="titre">
 				<h3>Description du produit :</h3><textarea name="descr"><?php echo $data->descr; ?></textarea>
-				<h3>Prix</h3><input value="<?php echo $data->prix; ?>" type="text" name="prix"/>
-				<h3>Stock : </h3><input type="text" value="<?php echo $data->nbitem; ?>"name="nbitem"/><br><br>
-				<input type="submit" name="submit" value="Modifier"/>
-				</form>
+				<h3>Prix</h3><input value="<?php echo $data->prix; ?>" type="text" name="prix">
+				<h3>Stock : </h3><input type="text" value="<?php echo $data->nbitem; ?>"name="nbitem"><br><br>
+				<input type="submit" name="submit" value="Modifier">
+                </form></center>
 
 				<?php
 
@@ -281,18 +279,18 @@
 					$update = $db->prepare("UPDATE products SET titre='$titre',descr='$descr',prix='$prix',nbitem='$nbitem' WHERE id=$id");
 					$update->execute();
 
-					header('Location: admin.php?action=modifyanddelete');
+					header('Location: admin.php?action=modifieretsuppr');
 
 				}
 
-			}else if($_GET['action']=='delete'){
+			}else if($_GET['action']=='suppr'){
 
 				$id=$_GET['id'];
 				$delete = $db->prepare("DELETE FROM products WHERE id=$id");
 				$delete->execute();
-				header('Location: admin.php?action=modifyanddelete');
+				header('Location: admin.php?action=modifieretsuppr');
 
-			}else if($_GET['action']=='add_categorie'){
+			}else if($_GET['action']=='ajouter_categorie'){
 
 				if(isset($_POST['submit'])){
 
@@ -307,7 +305,7 @@
 
 					}else{
 
-						echo'Veuillez remplir tous les champs';
+						echo'<h2 style="color:red;">Champs incomplets!<h2>';
 
 					}
 
@@ -315,15 +313,15 @@
 
 				?>
 
-				<form action="" method="post">
-				<h3>Titre de la categorie : </h3><input type="text" name="name"/><br><br>
-				<input type="submit" name="submit" value="Ajouter" />
-				</form>
+				<center><form action="" method="post">
+				<h3>Nom de la categorie : </h3><input type="text" name="name"><br><br>
+				<input type="submit" name="submit" value="Ajouter" >
+                </form></center>
 
 				<?php
 
 
-			}else if($_GET['action']=='modifyanddelete_categorie'){
+			}else if($_GET['action']=='modifieretsuppr_categorie'){
 
 				$select = $db->prepare("SELECT * FROM categorie");
 				$select->execute();
@@ -332,13 +330,13 @@
 
 					echo $s->name;
 					?>
-					<a href="?action=modify_categorie&amp;id=<?php echo $s->id; ?>">Modifier</a>
-					<a href="?action=delete_categorie&amp;id=<?php echo $s->id; ?>">X</a><br><br>
+					<a href="?action=modifier_categorie&amp;id=<?php echo $s->id; ?>">Modifier</a>
+					<a href="?action=suppr_categorie&amp;id=<?php echo $s->id; ?>">X</a><br><br>
 					<?php
 
 				}
 
-			}else if($_GET['action']=='modify_categorie'){
+			}else if($_GET['action']=='modifier_categorie'){
 
 				$id=$_GET['id'];
 
@@ -349,10 +347,10 @@
 
 				?>
 
-				<form action="" method="post">
-				<h3>Titre de la categorie :</h3><input value="<?php echo $data->name; ?>" type="text" name="name"/><br>
-				<input type="submit" name="submit" value="Modifier"/>
-				</form>
+				<center><form action="" method="post">
+				<h3>Nom de la categorie à modifier :</h3><input value="<?php echo $data->name; ?>" type="text" name="name"><br>
+				<input type="submit" name="submit" value="Modifier">
+                </form></center>
 
 				<?php
 
@@ -371,22 +369,85 @@
 				
 					$update = $db->query("UPDATE products SET categorie='$name' WHERE categorie='$result->name'");
 					
-					header('Location: admin.php?action=modifyanddelete_categorie');
+					header('Location: admin.php?action=modifieretsuppr_categorie');
 				}
 
-			}else if($_GET['action']=='delete_categorie'){
+			}else if($_GET['action']=='suppr_categorie'){
 
 				$id=$_GET['id'];
 				$delete = $db->prepare("DELETE FROM categorie WHERE id=$id");
 				$delete->execute();
 
-				header('Location: admin.php?action=modifyanddelete_categorie');
+				header('Location: admin.php?action=modifieretsuppr_categorie');
 
-			}else if($_GET['action']=='options'){
+			}else if($_GET['action']=='ajouter_vendeur'){
+
+				if(isset($_POST['submit'])){
+
+                    $vendeur =  addslashes($_POST['vendeur']);
+                    $email = addslashes($_POST['email']);
+                    $nom = addslashes($_POST['nom']);
+                    $prenom = addslashes($_POST['prenom']);
+                    $adresse = addslashes($_POST['adresse']);
+                    $mdp = addslashes($_POST['mdp']);
+
+					if($vendeur && $email && $nom && $prenom && $adresse && $mdp){
+
+						$insert = $db->prepare("INSERT INTO vendeur(vendeur,email,nom,prenom,adresse,mdp) VALUES('$vendeur','$email','$nom','$prenom','$adresse','$mdp')");
+						$insert->execute();
+
+
+					}else{
+
+						echo'<h2 style="color:red;">Champs incomplets!<h2>';
+
+					}
+
+				}
 
 				?>
 
-				<h3>Possibilités de Frais de service :</h3>
+				<center><form action="" method="post">
+				<h3>Pseudo Vendeur : </h3><input type="text" name="vendeur">
+                <h3>Email Vendeur : </h3><input type="text" name="email">
+                <h3>Nom Vendeur : </h3><input type="text" name="nom">
+                <h3>Prenom Vendeur : </h3><input type="text" name="prenom">
+                <h3>Adresse Vendeur : </h3><input type="text" name="adresse">
+                <h3>Mot-de-Passe Vendeur : </h3><input type="text" name="mdp">
+                <br><br>
+				<input type="submit" name="submit" value="Ajouter" >
+                </form></center>
+
+				<?php
+
+
+			}else if($_GET['action']=='supprimer_vendeur'){
+
+				$select = $db->prepare("SELECT * FROM vendeur");
+				$select->execute();
+
+				while($s=$select->fetch(PDO::FETCH_OBJ)){
+
+					echo $s->vendeur;
+					?>
+					<a href="?action=suppr_vendeur&amp;id=<?php echo $s->id; ?>">X</a><br><br>
+					<?php
+
+				}
+
+			}else if($_GET['action']=='suppr_vendeur'){
+
+				$id=$_GET['id'];
+				$delete = $db->prepare("DELETE FROM vendeur WHERE id=$id");
+				$delete->execute();
+
+				header('Location: admin.php?action=modifieretsuppr_vendeur');
+
+			}else if($_GET['action']=='option'){
+
+				?>
+
+                <center><h3>Possibilités de Frais de service :</h3></center>
 
 				<?php
 
@@ -396,9 +457,9 @@
 
 					?>
 
-					<form action="" method="post">
-					<input type="text" name="frais" value="<?php echo $s->name;?>"/><a href="?action=modify_frais&amp;name=<?php echo $s->name; ?>">  Modifier</a>
-					</form>
+					<center><form action="" method="post">
+					<input type="text" name="frais" value="<?php echo $s->name;?>"><a href="?action=modifier_frais&amp;name=<?php echo $s->name; ?>"> Modifier</a>
+                    </form></center>
 
 					<?php
 
@@ -424,24 +485,24 @@
 						header("Refresh:0");
 
 					}
-
 				}
 
 				?>
-				<h3>tva : </h3>
+                <center>
+				<h3>TVA : </h3>
 
-				<form action="" method="post"/>
-				<input type="text" name="tva" value="<?= $show_tva; ?>"/>
-				<input type="submit" name="submit2" value="Modifier"/>
-				</form>
+				<form action="" method="post">
+				<input type="text" name="tva" value="<?= $show_tva; ?>">
+				<input type="submit" name="submit2" value="Modifier">
+                </form></center>
 
 				<?php
 
 
-			}else if($_GET['action']=='modify_frais'){
+			}else if($_GET['action']=='modifier_frais'){
 
-				$old_frais = $_GET['name'];
-				$select = $db->query("SELECT * FROM frais WHERE name=$old_frais");
+				$ancien_frais = $_GET['name'];
+				$select = $db->query("SELECT * FROM frais WHERE name=$ancien_frais");
 				$s = $select->fetch(PDO::FETCH_OBJ);
 
 				if(isset($_POST['submit'])){
@@ -449,27 +510,23 @@
 					$frais=$_POST['frais'];
 					$prix=$_POST['prix'];
 
-					if($frais&&$prix){
+					if($prix && $frais){
 
-						$update = $db->query("UPDATE frais SET name='$frais', prix='$prix' WHERE name=$old_frais");
+						$update = $db->query("UPDATE frais SET name='$frais', prix='$prix' WHERE name=$ancien_frais");
 						header("Refresh:0");
-
 					}
-
 				}
 
 				?>
-
-				<h3>Options</h3>
+                <center><h3>Options : Frais de service</h3>
 
 				<form action="" method="post">
-				<h3>Poids (plus de) : </h3><input type="text" name="frais" value="<?php echo $_GET['name']; ?>"/><br>
-				<h3>Correspond à </h3><input type="text" name="prix" value="<?php echo $s->prix; ?>"/> <h3>Euros</h3>
-				<input type="submit" name="submit" value="Modifier"/>
-				</form>
+				<h3>Id frais de Service :</h3><input type="text" name="frais" value="<?php echo $_GET['name']; ?>"><br>
+				<h3>Prix du service :</h3><input type="text" name="prix" value="<?php echo $s->prix; ?>"> <h3>en Euros</h3>
+				<input type="submit" name="submit" value="Modifier">
+                </form></center>
 
 				<?php
-
 
 			}else{
 
@@ -478,14 +535,10 @@
 			}
 
 		}else{
-
-
-
+            
 		}
 
 	}else{
-
 		header('Location: ../index.php');
-
 	}
 ?>
