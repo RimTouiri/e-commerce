@@ -89,15 +89,15 @@
     ?>
 
 		<br>
-        <center><h1>Catégories :</h1></center>
-        <br>
 		
         <?php
 	       $select = $db->query("SELECT * FROM categorie");
 	       while($s = $select->fetch(PDO::FETCH_OBJ)){
 		?>
         <div class="categorie">
-            <center><a class="categorie" href="?categorie=<?php echo $s->slug;?>"><li><h2><?php echo $s->name ?></h2></li></a></center>
+        
+            <center><a class="categorie" href="?categorie=<?php echo $s->slug;?>"><li><h2><img width="600px" src="img/<?php echo $s->slug; ?>.png"></h2><br></li></a></center>
+    
         </div>
 		<?php
 	   }

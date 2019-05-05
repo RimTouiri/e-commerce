@@ -15,13 +15,7 @@
     <a href="?action=modifieretsuppr">Modifier / Supprimer un produit</a></center>
 </div>
 <br>
-<div>
-    <center><h2>Gestion des Catégories</h2>
-    <a href="?action=ajouter_categorie">Ajouter une categorie</a>
-    <br>
-    <a href="?action=modifieretsuppr_categorie">Modifier / Supprimer une categorie</a>
-    <br><br></center>
-</div>
+
 <div>
     <center><h2>Gestion des Vendeurs</h2>
     <a href="?action=ajouter_vendeur">Ajouter un vendeur</a>

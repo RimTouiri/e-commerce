@@ -23,10 +23,10 @@
 	</head>
     
 	<header>
+
         <a class="admin" href="admin/index.php"><img width="30px" src="img/admin.png"></a>
         <a class="panier" href="panier.php"><img width="50px" src="img/panier.png"></a>
-        <br>
-        <center><h1>ECE Amazon</h1></center>
+        <center><img width="150px" src="img/logo.png" alt="logo"></center>
         <br>
         <br>
 
